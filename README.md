@@ -1,6 +1,5 @@
-
-# Self-Driving Vision Demo
-<img width="1037" height="676" alt="image" src="https://github.com/user-attachments/assets/7f0b08e0-e94f-4a77-97d4-6cbbc376bd50" />
+# Self-Driving Vision Web App
+<img width="1037" height="676" alt="dashboard image" src="./dashboard.png" />
 
 ## Creator
 ## Prince Maurya
@@ -8,16 +7,14 @@
 ---
 
 ### Project Description
-This project demonstrates real-time semantic scene segmentation on video, simulating how autonomous vehicles perceive their environment. It uses DeepLabV3 (ResNet101 backbone) to classify every pixel in each video frame and overlays colored segmentation masks for classes like road, sky, trees, people, cars, and buildings.
+This project demonstrates real-time semantic scene segmentation on video, simulating how autonomous vehicles perceive their environment. It has been transformed into a **Modern Web Application**! It uses a high-performance `MobileNet-V3` backend optimized for Apple Silicon (MPS) and CUDA to classify every pixel in each video frame. It streams a real-time feed with colored segmentation masks directly to a highly professional, dark-mode browser dashboard.
 
 ### Features
-- Real-time video processing and display
-- Per-pixel semantic segmentation (not bounding boxes)
-- Colored overlays for each class (e.g., sky, road, trees, people, cars, buildings)
-- Transparent mask overlay for AI perception effect
-- Real-time FPS and inference time display
-- Output video saved as `output_segmentation.mp4`
-- Overlay panel shows detected classes and simulated car speed
+- **Real-time Web Streaming**: Streams AI-processed video directly to your browser via Flask.
+- **Modern Dashboard UI**: Sleek, glassmorphic dark-theme interface with simulated live telemetry and event logs.
+- **Hardware Acceleration**: Automatically utilizes MPS (Apple Silicon) or CUDA (NVIDIA GPUs) for fast real-time inference.
+- **Per-Pixel Segmentation**: Uses MobileNet-V3 for lightning-fast perception.
+- Colored overlays for each class (e.g., road, sky, trees, people, cars, buildings).
 
 ---
 
@@ -25,50 +22,41 @@ This project demonstrates real-time semantic scene segmentation on video, simula
 
 ```
 project/
-├── main.py                # Entry point, parses arguments and runs pipeline
-├── segmentation_model.py   # Loads DeepLabV3 model and runs segmentation
-├── video_processor.py      # Handles video reading, processing, overlays, and saving
+├── app.py                  # Flask Web Server entry point
+├── templates/
+│   └── index.html          # Modern Dashboard UI (HTML/CSS)
+├── main.py                 # (Legacy) CLI entry point
+├── segmentation_model.py   # Loads AI model (MobileNet-V3) and runs segmentation
+├── video_processor.py      # Handles video streaming (generate_frames) and processing
 ├── utils/
 │   ├── color_map.py        # Color mapping for segmentation classes
 │   └── fps_counter.py      # FPS calculation utility
 ├── requirements.txt        # Python dependencies
+├── dashboard.png           # UI Screenshot
 └── README.md               # Project documentation
 ```
 
 ---
 
-### How to Fork & Use
-1. Click the **Fork** button on GitHub to copy the repo to your account.
-2. Clone your fork:
+### How to Run
+
+1. Clone the repository and navigate into it.
+2. Install dependencies (we recommend using a virtual environment):
 	```bash
-	git clone https://github.com/<your-username>/self-driving-vision-demo.git
-	cd self-driving-vision-demo/project
-	```
-3. Install dependencies:
-	```bash
+	python3 -m venv venv
+	source venv/bin/activate
 	pip install -r requirements.txt
 	```
-4. Run the demo:
+3. Place a sample driving video named `input_video.mp4` in the root directory.
+4. Run the Flask Server:
 	```bash
-	python main.py --video input_video.mp4
+	python app.py
 	```
-5. The output video will be saved as `output_segmentation.mp4`.
-
----
-
-### Relevance (Wikipedia-style)
-Semantic scene segmentation is a core technology in computer vision, enabling machines to understand environments at the pixel level. In autonomous vehicles, this allows for precise detection of roads, obstacles, pedestrians, and other objects, improving safety and navigation. This project simulates how self-driving cars perceive their surroundings, providing a visual and technical demonstration of advanced AI perception.
-
----
-
-### Example Command
-```bash
-python main.py --video input_video.mp4
-```
+5. Open your Chrome browser and navigate to:
+    **http://localhost:5001**
 
 ---
 
 ### Notes
-- Requires a CUDA-capable GPU for best real-time performance, but will run on CPU (slower).
-- Uses DeepLabV3 pretrained on COCO/VOC via torchvision.
-
+- Ensure you have a valid `input_video.mp4` file before running the server.
+- The first time you run it, the PyTorch model weights (~40MB) will be downloaded automatically.

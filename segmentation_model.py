@@ -32,8 +32,13 @@ preprocess = transforms.Compose([
 ])
 
 def load_segmentation_model():
-    model = models.segmentation.deeplabv3_resnet101(pretrained=True).eval()
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True).eval()
+    if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        device = torch.device('mps')
+    elif torch.cuda.is_available():
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
     model.to(device)
     return model, VOC_CLASSES
 

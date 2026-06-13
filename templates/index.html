@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Vision System | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0B0F19;
+            --bg-surface: #111827;
+            --bg-surface-elevated: #1F2937;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --accent-primary: #3B82F6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --status-live: #10B981;
+            --font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05), transparent 25%);
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--accent-primary), #8B5CF6);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .brand-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Main Layout */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 1.5rem;
+            padding: 1.5rem 2rem;
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Video Feed Section */
+        .feed-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .feed-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--status-live);
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--status-live);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--status-live);
+            animation: pulse-green 2s infinite;
+        }
+
+        .video-wrapper {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Stats Panel Section */
+        .panel-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .panel-header {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-box {
+            background: var(--bg-surface-elevated);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-value.blue { color: var(--accent-primary); }
+        .stat-value.green { color: var(--status-live); }
+
+        .system-logs {
+            background: var(--bg-surface-elevated);
+            border-radius: 10px;
+            padding: 1rem;
+            height: 200px;
+            border: 1px solid var(--border-subtle);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+
+        .log-entry { margin-bottom: 0.5rem; }
+        .log-time { color: var(--accent-primary); margin-right: 0.5rem; }
+
+        /* Buttons */
+        .btn {
+            background: var(--bg-surface-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            background: #2563EB;
+            box-shadow: 0 6px 16px var(--accent-glow);
+            border-color: transparent;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            Autonomous Vision
+        </div>
+        <div class="nav-actions">
+            <button class="btn" onclick="window.location.reload()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.25 4.28"/></svg>
+                Sync Feed
+            </button>
+            <button class="btn btn-primary" onclick="alert('Settings configured for optimal inference')">
+                System Settings
+            </button>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        
+        <!-- Left: Video Feed -->
+        <section class="feed-section">
+            <div class="feed-header">
+                <h2 class="feed-title">Main Camera Sensor (Front)</h2>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    Stream Active
+                </div>
+            </div>
+            <div class="video-wrapper">
+                <img src="{{ url_for('video_feed') }}" alt="Real-time Semantic Segmentation">
+            </div>
+        </section>
+
+        <!-- Right: Telemetry & Stats -->
+        <section class="panel-section">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+                    Live Telemetry
+                </div>
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Model Engine</div>
+                        <div class="stat-value blue">DeepLabV3</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Backbone</div>
+                        <div class="stat-value">ResNet-101</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Network Latency</div>
+                        <div class="stat-value green">24ms</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">System Health</div>
+                        <div class="stat-value green">Optimal</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-card" style="flex: 1;">
+                <div class="panel-header">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                    Event Logs
+                </div>
+                <div class="system-logs" id="logs">
+                    <div class="log-entry"><span class="log-time">[00:00:00]</span> SYSTEM INITIALIZED</div>
+                    <div class="log-entry"><span class="log-time">[00:00:01]</span> MODEL LOADED: DeepLabV3</div>
+                    <div class="log-entry"><span class="log-time">[00:00:01]</span> INFERENCE ENGINE STARTED</div>
+                    <div class="log-entry"><span class="log-time">[00:00:02]</span> ESTABLISHING VIDEO STREAM...</div>
+                    <div class="log-entry"><span class="log-time">[00:00:03]</span> STREAM CONNECTED</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Simulate streaming logs for a dynamic feel
+        const logsContainer = document.getElementById('logs');
+        const sampleLogs = [
+            "FRAME PROCESSED - Objects detected: Car, Road, Sky",
+            "INFERENCE TIME NORMALIZED",
+            "ADJUSTING EXPOSURE FOR LIGHT CONDITIONS",
+            "FRAME PROCESSED - Objects detected: Person, Building",
+            "SENSOR SYNC COMPLETED",
+            "FRAME PROCESSED - Maintaining trajectory tracking"
+        ];
+        
+        let seconds = 4;
+        setInterval(() => {
+            const timeStr = `[00:00:${seconds.toString().padStart(2, '0')}]`;
+            const randomLog = sampleLogs[Math.floor(Math.random() * sampleLogs.length)];
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-time">${timeStr}</span> ${randomLog}`;
+            
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+            seconds++;
+            
+            if (logsContainer.children.length > 50) {
+                logsContainer.removeChild(logsContainer.firstChild);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
